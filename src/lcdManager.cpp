@@ -12,6 +12,7 @@
 #include "lcdManager.hpp"
 #include "FreeRTOSConfig.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 
 // interrupt is triggered by S1 pushbutton on the
 // Vandaluino Shield, toggles piezobuzzer on/off
@@ -20,7 +21,7 @@ void IRAM_ATTR ISR(){
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   button_Pressed = !button_Pressed;
   if(button_Pressed == false){
-    xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskHasWoken);
+    xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken);
     tone(GPIO_INTERRUPT, 0);
   }
 }
@@ -44,7 +45,6 @@ void getTime(){
 
   if(!getLocalTime(&ntptime)){
     Serial.print("Could not get time\n");
-    returnString = (char *)"Could not get time";
   }
   Serial.print(&ntptime, "%A, %B %d %Y %H:%M:%S");
   Serial.print("\n");

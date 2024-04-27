@@ -21,10 +21,10 @@ void setup() {
 	Serial.begin(MONITOR_SPEED);
 	gui.init();
         
-	pinMode(GPIO_INTERUPT, INPUT_PULLDOWN);
+	pinMode(GPIO_INTERRUPT, INPUT_PULLDOWN);
 	pinMode(ALARM_PIN, OUTPUT);
 
-	attatchInterrupt(GPIO_INTERRUPT, ISR, FALLING);
+	attachInterrupt(GPIO_INTERRUPT, ISR, FALLING);
 
 	xTaskCreate(vLCDTask, "LCD", 2048, NULL, 5, NULL);
 

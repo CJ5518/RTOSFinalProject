@@ -36,5 +36,7 @@ const char* ntpServer = "pool.ntp.org"; // target server to get time from intern
 LiquidCrystal lcd(13, 12, 14, 27, 26, 25);
 
 void getTime();
+void IRAM_ATTR ISR();
+void vLCDTask(void *pvParameters);
 
 #endif
