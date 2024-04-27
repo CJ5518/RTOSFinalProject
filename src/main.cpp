@@ -9,6 +9,11 @@
 
 GUI gui;
 
+int status = WL_IDLE_STATUS;
+
+const char* passwordAVG = "AirVandalGuest"; // password for Wi-Fi network
+const char* ssidAVG = "GoVandals!"; // name of Wi-Fi network
+
 //queue for sending on/off actions to the light
 //declared in lightManager.cpp
 extern QueueHandle_t lightActions;
@@ -38,6 +43,22 @@ void setup() {
 
         newAlarms = xQueueCreate(16, sizeof(alarmDefinition));
         xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 4096, NULL, 5, NULL);
+
+        WiFi.setHostname("AVG_ESP32"); // set a host name for the ESP32
+        delay(1000);
+        WiFi.mode(WIFI_AP_STA); // set mode of WiFi to Station, connect to a pre-existing network
+        delay(1000);
+
+        WiFi.begin(ssidAVG, passwordAVG); // connect to specified network and enter password
+        delay(1000);
+        //status = WiFi.status(); // get current status of WiFi connection
+
+        while(status != WL_CONNECTED){
+          printf("Connecting...\n");
+          status = WiFi.begin(ssidAVG, passwordAVG);
+          delay(1000);
+        }
+
 }
 
 void loop() {
