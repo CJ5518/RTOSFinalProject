@@ -9,9 +9,10 @@ QueueHandle_t newAlarms;
 #include "lightManager.hpp"
 extern QueueHandle_t lightActions;
 
+#include "lcdManager.hpp"
+
 //returns the time formatted appropriately for use in defining an alarm
 unsigned int timeToAlarmTime(time_t t) {
-    int ret;
     tm *now = localtime(&t);
 
     return timeToAlarmTime(now->tm_hour, now->tm_min) + now->tm_sec;
@@ -19,6 +20,9 @@ unsigned int timeToAlarmTime(time_t t) {
 
 //returns the time formatted appropriately for use in defining an alarm
 unsigned int timeToAlarmTime(int hours, int minutes) {
+    //guarantee the time is within the day
+    hours = constrain(hours, 0, 23);
+    minutes = constrain(minutes, 0, 59);
     return (hours * 60 * 60) + (minutes * 60);
 }
 
@@ -59,6 +63,7 @@ void task_alarmScheduler(void *p) {
                 if(tempAlarm.actions == 0) {
                     while(i < (alarmCount - 1)) {
                         alarms[i] = alarms[i + 1];
+                        i++;
                     }
                     alarmCount--;
                 } else {
@@ -68,11 +73,14 @@ void task_alarmScheduler(void *p) {
                 //no alarm existed at this time -- add one 
                 if(alarmCount >= MAX_ALARMS) {
                     printf("Error! Maximum number of alarms reached.\n");
+                } else if(tempAlarm.actions == 0) {
+                    printf("Error! Attempted to add an empty alarm, or delete an alarm which was not found.\n");
                 } else {
                     //shift all further alarms down
                     j = alarmCount;
                     while(j > i) {
                         alarms[j] = alarms[j - 1];
+                        j--;
                     }
                     alarms[i] = tempAlarm;
 
@@ -107,7 +115,8 @@ void task_alarmScheduler(void *p) {
                         xQueueSendToBack(lightActions, &signal, 0);
                     }
                     if(tempAlarm.actions & ACTION_RING) {
-                        //TODO: signal the buzzer to ring
+                        //TODO: standardize frequency?
+                        tone(ALARM_PIN, 1700);
                     }
                 }
                 //possible edge case failure:
