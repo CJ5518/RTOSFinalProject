@@ -17,6 +17,7 @@ typedef struct {
 
 //returns the time formatted appropriately for use in defining an alarm
 unsigned int timeToAlarmTime(time_t t);
+unsigned int timeToAlarmTime(int hours, int minutes);
 
 //task which coordinates alarm events
 void task_alarmScheduler(void *p);
