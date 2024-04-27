@@ -5,6 +5,7 @@
 #include "alarmScheduler.hpp"
 #include "lightManager.hpp"
 #include "hdcWrapper.hpp"
+#include "lcdManager.hpp"
 
 GUI gui;
 
@@ -20,6 +21,13 @@ void setup() {
 	Serial.begin(MONITOR_SPEED);
 	gui.init();
         
+	pinMode(GPIO_INTERUPT, INPUT_PULLDOWN);
+	pinMode(ALARM_PIN, OUTPUT);
+
+	attatchInterrupt(GPIO_INTERRUPT, ISR, FALLING);
+
+	xTaskCreate(vLCDTask, "LCD", 2048, NULL, 5, NULL);
+
         lightActions = xQueueCreate(16, sizeof(int));
         xTaskCreate(task_lightManager, "Light Manager", 2048, NULL, 5, NULL);
         
