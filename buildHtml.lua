@@ -42,6 +42,16 @@ local list = getListOfFiles();
 
 local stringList = {};
 
+--Lua has no continue statement and I didn't want to add more indentation to my code
+--so here's a quick hack to remove the file we don't want
+--A more robust solution that can remove multiple files would need recursion or an outer loop
+for i,v in ipairs(list) do
+	if v:lower() == "readme.md" then
+		table.remove(list, i);
+		break;
+	end
+end
+
 for i, v in ipairs(list) do
 	--Read file content
 	local file = io.open("data/" .. v, "r");
@@ -63,16 +73,19 @@ for i, v in ipairs(list) do
 --server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
 --request->send_P(200, "text/html", index_html);
 --});
-	if filename == "index" then
-		print('server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {');
-	else
-		print('server->on("/' .. v .. '", HTTP_ANY, [](AsyncWebServerRequest *request) {');
-	end
+	print('server->on("/' .. v .. '", HTTP_ANY, [](AsyncWebServerRequest *request) {');
 	local extensionMIME = extension;
 	if extension == "js" then extensionMIME = "javascript" end
 	print(string.format('    request->send_P(200, "text/%s", %s_%s);', extensionMIME, filename, extension));
 	print('});');
 end
+
+--Print an extra entry to redirect to index
+print(
+[[server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+	request->redirect("/index.html");
+});]]
+)
 
 local finalString = filePattern:format(table.concat(stringList, "\n"));
 
