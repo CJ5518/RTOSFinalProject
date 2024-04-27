@@ -56,12 +56,18 @@ void GUI::onWifiEvent(arduino_event_id_t event, arduino_event_info_t info) {
             if (!server) {
                 server = new AsyncWebServer(80);
 
-                server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
-                    request->send_P(200, "text/html", index_html);
-                });
-                server->on("/styles.css", HTTP_ANY, [](AsyncWebServerRequest *request) { 
-                    request->send_P(200, "text/css", styles_css);
-                });
+server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/css", index_css);
+});
+server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", index_html);
+});
+server->on("/package.json", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/json", package_json);
+});
+server->on("/style.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/css", style_css);
+});
 
                 server->begin();
                 Serial.printf("Started server\n");
