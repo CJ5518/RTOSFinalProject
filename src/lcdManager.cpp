@@ -10,9 +10,7 @@
  *       queue for lighting to lightManager.cpp. 
  *********************************************/
 #include "lcdManager.hpp"
-#include "FreeRTOSConfig.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
+#include <Arduino.h>
 
 // interrupt is triggered by S1 pushbutton on the
 // Vandaluino Shield, toggles piezobuzzer on/off

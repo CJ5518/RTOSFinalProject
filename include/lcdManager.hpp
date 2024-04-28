@@ -11,6 +11,7 @@
 #define LCD_MANAGER_HPP
 
 #include <LiquidCrystal.h>
+#include <Arduino.h>
 #include "lightManager.hpp"
 
 #define GPIO_INTERRUPT 18 // pin for pushbutton 1 on the Vandaluino Shield
