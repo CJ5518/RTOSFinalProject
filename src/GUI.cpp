@@ -56,10 +56,16 @@ void GUI::onWifiEvent(arduino_event_id_t event, arduino_event_info_t info) {
             if (!server) {
                 server = new AsyncWebServer(80);
 
-server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+server->on("/alarm.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/css", alarm_css);
+});
+server->on("/alarm.html", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", alarm_html);
+});
+server->on("/index.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/css", index_css);
 });
-server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+server->on("/index.html", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", index_html);
 });
 server->on("/package.json", HTTP_ANY, [](AsyncWebServerRequest *request) {
@@ -67,6 +73,9 @@ server->on("/package.json", HTTP_ANY, [](AsyncWebServerRequest *request) {
 });
 server->on("/style.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/css", style_css);
+});
+server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        request->redirect("/index.html");
 });
 
                 server->begin();
