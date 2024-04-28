@@ -11,8 +11,8 @@ GUI gui;
 
 int status = WL_IDLE_STATUS;
 
-const char* passwordAVG = "AirVandalGuest"; // password for Wi-Fi network
-const char* ssidAVG = "GoVandals!"; // name of Wi-Fi network
+const char* passwordHSPT = "04xjji7sa764i"; // password for Wi-Fi network
+const char* ssidHSPT = "iPhone"; // name of Wi-Fi network
 
 void setup() {
 	Serial.begin(MONITOR_SPEED);
@@ -38,20 +38,20 @@ void setup() {
     shouldListAlarms = xSemaphoreCreateBinary();
 	xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 4096, NULL, 5, NULL);
 
-	//WiFi.setHostname("AVG_ESP32"); // set a host name for the ESP32
-	//delay(1000);
-	//WiFi.mode(WIFI_AP_STA); // set mode of WiFi to Station, connect to a pre-existing network
-	//delay(1000);
+	WiFi.setHostname("AVG_ESP32"); // set a host name for the ESP32
+	delay(1000);
+	WiFi.mode(WIFI_AP_STA); // set mode of WiFi to Station, connect to a pre-existing network
+	delay(1000);
 
-	//WiFi.begin(ssidAVG, passwordAVG); // connect to specified network and enter password
-	//delay(1000);
-	//status = WiFi.status(); // get current status of WiFi connection
+	WiFi.begin(ssidHSPT, passwordHSPT); // connect to specified network and enter password
+	delay(1000);
+	status = WiFi.status(); // get current status of WiFi connection
 
-	//while(status != WL_CONNECTED){
-	//	printf("Connecting...\n");
-	//	status = WiFi.begin(ssidAVG, passwordAVG);
-	//	delay(1000);
-	//}
+	while(status != WL_CONNECTED){
+		printf("Connecting...\n");
+		status = WiFi.begin(ssidHSPT, passwordHSPT);
+		delay(1000);
+	}
 
 }
 
