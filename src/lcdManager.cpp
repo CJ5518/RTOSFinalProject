@@ -35,7 +35,7 @@ void IRAM_ATTR ISR(){
   button_Pressed = !button_Pressed;
   if(button_Pressed == false){
     xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken);
-    tone(GPIO_INTERRUPT, 0);
+    tone(ALARM_PIN, 0);
   }
 }
 
