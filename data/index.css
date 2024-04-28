@@ -23,8 +23,10 @@
 .home-button {
   width: 200px;
   height: 100px;
-  box-shadow: 5px 5px 10px 0px #d4d4d4;
+  font-size: 20px;
+  box-shadow: rgb(212, 212, 212) 5px 5px 10px 0px;
   font-style: normal;
+  text-align: center;
   transition: 0.3s;
   font-weight: 700;
   border-radius: var(--dl-radius-radius-radius8);
@@ -35,8 +37,10 @@
 .home-button01 {
   width: 200px;
   height: 100px;
+  font-size: 20px;
   box-shadow: 5px 5px 10px 0px #d4d4d4;
   font-style: normal;
+  text-align: center;
   transition: 0.3s;
   font-weight: 700;
   border-radius: var(--dl-radius-radius-radius8);
@@ -55,7 +59,8 @@
 .home-button02 {
   width: 200px;
   height: 100px;
-  box-shadow: 5px 5px 10px 0px #d4d4d4;
+  font-size: 20px;
+  box-shadow: rgb(212, 212, 212) 5px 5px 10px 0px;
   font-style: normal;
   transition: 0.3s;
   font-weight: 700;
@@ -67,8 +72,10 @@
 .home-button03 {
   width: 200px;
   height: 100px;
+  font-size: 20px;
   box-shadow: 5px 5px 10px 0px #d4d4d4;
   font-style: normal;
+  text-align: center;
   transition: 0.3s;
   font-weight: 700;
   border-radius: var(--dl-radius-radius-radius8);
@@ -87,6 +94,7 @@
 .home-button04 {
   width: 200px;
   height: 100px;
+  font-size: 20px;
   box-shadow: 5px 5px 10px 0px #d4d4d4;
   font-style: normal;
   transition: 0.3s;
@@ -99,6 +107,7 @@
 .home-button05 {
   width: 200px;
   height: 100px;
+  font-size: 20px;
   box-shadow: 5px 5px 10px 0px #d4d4d4;
   font-style: normal;
   transition: 0.3s;
@@ -124,9 +133,12 @@
   text-align: center;
 }
 .home-button06 {
+  font-size: 20px;
+  box-shadow: 5px 5px 10px 0px #d4d4d4;
   font-style: normal;
   transition: 0.3s;
   font-weight: 700;
+  border-radius: var(--dl-radius-radius-radius8);
 }
 .home-button06:hover {
   background-color: var(--dl-color-primary-700);
