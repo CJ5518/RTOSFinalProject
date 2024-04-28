@@ -14,14 +14,6 @@ int status = WL_IDLE_STATUS;
 const char* passwordAVG = "AirVandalGuest"; // password for Wi-Fi network
 const char* ssidAVG = "GoVandals!"; // name of Wi-Fi network
 
-//queue for sending on/off actions to the light
-//declared in lightManager.cpp
-extern QueueHandle_t lightActions;
-
-//queue for sending new alarm (time, actions) to the alarm scheduler
-//declared in alarmScheduler.cpp
-extern QueueHandle_t newAlarms;
-
 void setup() {
 	Serial.begin(MONITOR_SPEED);
 	gui.init();
@@ -42,6 +34,8 @@ void setup() {
         getTempHumid(a, b);
 
         newAlarms = xQueueCreate(16, sizeof(alarmDefinition));
+        listAlarms = xQueueCreate((MAX_ALARMS * 2), sizeof(alarmDefinition));
+        shouldListAlarms = xSemaphoreCreateBinary();
         xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 4096, NULL, 5, NULL);
 
         WiFi.setHostname("AVG_ESP32"); // set a host name for the ESP32

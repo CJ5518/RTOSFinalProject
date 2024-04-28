@@ -8,6 +8,10 @@
 #define ACTION_LIGHT (0b1)
 #define ACTION_RING (0b10)
 
+extern QueueHandle_t newAlarms;
+extern QueueHandle_t listAlarms;
+extern SemaphoreHandle_t shouldListAlarms;
+
 //struct to represent the definition of an alarm
 typedef struct {
     unsigned int time;
@@ -19,10 +23,13 @@ typedef struct {
 unsigned int timeToAlarmTime(time_t t);
 unsigned int timeToAlarmTime(int hours, int minutes);
 
+//converts from alarm time back to hours and minutes
+void timeFromAlarmTime(int &hours, int &minutes, unsigned int alarmTime);
+
 //task which coordinates alarm events
 void task_alarmScheduler(void *p);
 
 //max number of alarms defined at once
-#define MAX_ALARMS (16)
+#define MAX_ALARMS (32)
 
 #endif

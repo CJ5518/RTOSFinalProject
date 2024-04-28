@@ -5,9 +5,11 @@
 
 #include "alarmScheduler.hpp"
 QueueHandle_t newAlarms;
+QueueHandle_t listAlarms;
+SemaphoreHandle_t shouldListAlarms;
+
 
 #include "lightManager.hpp"
-extern QueueHandle_t lightActions;
 
 #include "lcdManager.hpp"
 
@@ -24,6 +26,13 @@ unsigned int timeToAlarmTime(int hours, int minutes) {
     hours = constrain(hours, 0, 23);
     minutes = constrain(minutes, 0, 59);
     return (hours * 60 * 60) + (minutes * 60);
+}
+
+//converts from alarm time back to hours and minutes
+void timeFromAlarmTime(int &hours, int &minutes, unsigned int alarmTime) {
+    alarmTime /= 60;
+    minutes = alarmTime % 60;
+    hours = alarmTime / 60;
 }
 
 //task which coordinates alarm events
@@ -50,6 +59,14 @@ void task_alarmScheduler(void *p) {
     int i, j;
 
     while(1) {
+        //check for a request to dump the alarm list
+        if(uxSemaphoreGetCount(shouldListAlarms)) {
+            xSemaphoreTake(shouldListAlarms, 1);
+            for(i = 0; i < alarmCount; i++) {
+                xQueueSend(listAlarms, alarms + i, 0);
+            }
+        }
+
         //process any changes to the alarm list
         //time out every 10 ticks to check if the current alarm can go off
         while(xQueueReceive(newAlarms, &tempAlarm, 10)) {

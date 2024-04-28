@@ -15,5 +15,7 @@
 
 //Task which controls neoPixel lights in response to a queue
 void task_lightManager(void *p);
+
+extern QueueHandle_t lightActions;
 #endif
 
