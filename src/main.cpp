@@ -35,7 +35,7 @@ void setup() {
 
 	newAlarms = xQueueCreate(16, sizeof(alarmDefinition));
     listAlarms = xQueueCreate((MAX_ALARMS * 2), sizeof(alarmDefinition));
-    shouldListAlarms = xSemaphoreCreateBinary();
+	schedulerCommands = xQueueCreate(16, sizeof(int));
 	xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 4096, NULL, 5, NULL);
 
 	WiFi.setHostname("AVG_ESP32"); // set a host name for the ESP32

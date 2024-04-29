@@ -6,7 +6,7 @@
 #include "alarmScheduler.hpp"
 QueueHandle_t newAlarms;
 QueueHandle_t listAlarms;
-SemaphoreHandle_t shouldListAlarms;
+QueueHandle_t schedulerCommands;
 
 
 #include "lightManager.hpp"
@@ -23,8 +23,15 @@ unsigned int timeToAlarmTime(time_t t) {
 //returns the time formatted appropriately for use in defining an alarm
 unsigned int timeToAlarmTime(int hours, int minutes) {
     //guarantee the time is within the day
-    hours = constrain(hours, 0, 23);
-    minutes = constrain(minutes, 0, 59);
+    hours = hours + (minutes / 60);
+    minutes = minutes % 60;
+    hours = hours % 24;
+
+    //in C, a % b will return negative values, given negative a.
+    //this would not be suitable here -- hour -2 means hour 22, not hour -2.
+    if(hours < 0) { hours = 24 + hours; }
+    if(minutes < 0) { minutes = 60 + minutes; }
+
     return (hours * 60 * 60) + (minutes * 60);
 }
 
@@ -41,7 +48,11 @@ void task_alarmScheduler(void *p) {
     alarmDefinition tempAlarm;
 
     time_t rawTime;
+    tm *structuredTime;
     unsigned int processedTime;
+    
+    //currently ongoing alarm actions
+    unsigned int currentActions = 0;
 
     int signal;
     
@@ -59,17 +70,9 @@ void task_alarmScheduler(void *p) {
     int i, j;
 
     while(1) {
-        //check for a request to dump the alarm list
-        if(uxSemaphoreGetCount(shouldListAlarms)) {
-            xSemaphoreTake(shouldListAlarms, 1);
-            for(i = 0; i < alarmCount; i++) {
-                xQueueSend(listAlarms, alarms + i, 0);
-            }
-        }
-
         //process any changes to the alarm list
-        //time out every 10 ticks to check if the current alarm can go off
-        while(xQueueReceive(newAlarms, &tempAlarm, 10)) {
+        //time out every few ticks to check if the current alarm can go off, or if there are immediate commands
+        while(xQueueReceive(newAlarms, &tempAlarm, 5)) {
             //find the alarm at this time, if one exists
             while(i < alarmCount && alarms[i].time < tempAlarm.time) {
                 i++;
@@ -113,6 +116,7 @@ void task_alarmScheduler(void *p) {
             }
         }
         
+        //time-based checks for triggering alarms
         if(alarmCount > 0) {
             rawTime = time(NULL);
             processedTime = timeToAlarmTime(rawTime);
@@ -126,6 +130,8 @@ void task_alarmScheduler(void *p) {
             //if there are any possible alarms left in the day
             if(nextAlarm < alarmCount) {
                 if(processedTime > tempAlarm.time) {
+                    //the now-current actions are whatever was happening before, along with this alarm
+                    currentActions = currentActions | tempAlarm.actions;
                     nextAlarm++;
                     if(tempAlarm.actions & ACTION_LIGHT) {
                         signal = LIGHT_SIGNAL_ON;
@@ -135,12 +141,17 @@ void task_alarmScheduler(void *p) {
                         //TODO: standardize frequency?
                         tone(ALARM_PIN, 1700);
                     }
+                    if(tempAlarm.actions & ACTION_ONCE) {
+                        //delete alarm -- send alarm with same time and actions = 0 to newAlarms
+                        changeAlarm(tempAlarm.time, 0);
+                    }
                 }
                 //possible edge case failure:
                 //  alarm right before midnight, doesn't ring, since time never less than its
                 //  add a daily alarm wraparound check here?
                 //  should not happen -- user alarms are only (hour, minute) precision
                 //  there is an entire 60 second timeframe for the just-before-midnight alarm to trigger
+                //  snooze-alarms are similarly minute-precision
             } else {
                 //there are no alarms remaining in the day.
                 //if the day has just barely begun, wrap around to the start of the list of alarms
@@ -154,8 +165,65 @@ void task_alarmScheduler(void *p) {
             }
         }
 
+        //check for any immediate commands to the scheduler
+        while(xQueueReceive(schedulerCommands, &signal, 0)) {
+            switch(signal) {
+                case COMMAND_SNOOZE:
+                    if(currentActions) {
+                        //signal the same actions to happen SNOOZE_LENGTH later
+                        rawTime = time(NULL);
+                        structuredTime = localtime(&rawTime);
+                        changeAlarm(structuredTime->tm_hour, 
+                                    structuredTime->tm_min + SNOOZE_LENGTH + 1, 
+                                    currentActions | ACTION_ONCE);
+
+                    }
+                    //no break -- a snooze should do the same things as off, in addition to other stuff
+                case COMMAND_OFF:
+                    currentActions = 0;
+                    //guarantee light is turned off
+                    i = LIGHT_SIGNAL_OFF;
+                    xQueueSendToBack(lightActions, &i, 0);
+
+                    //guarantee buzzer stops buzzing
+                    tone(ALARM_PIN, 0);
+                    break;
+                case COMMAND_LIST:
+                    for(i = 0; i < alarmCount; i++) {
+                        xQueueSendToBack(listAlarms, alarms + i, 0);
+                    }
+                    break;
+                default:
+                    printf("Error! Scheduler received unknown command: %d\n", signal);
+            }
+        }
     }
 }
 
+//wrapper which sends a queue message to turn off the alarm
+void offAlarm() {
+    int message = COMMAND_OFF;
+    xQueueSendToBack(schedulerCommands, &message, 0);
+}
+
+//wrapper which sends a queue message to snooze the alarm
+void snoozeAlarm() {
+    int message = COMMAND_SNOOZE;
+    xQueueSendToBack(schedulerCommands, &message, 0);
+}
+
+
+//wrapper which sends an alarm-change request to newAlarms
+void changeAlarm(unsigned int time, unsigned int actions) {
+    alarmDefinition message;
+    message.time = time;
+    message.actions = actions;
+    xQueueSendToBack(newAlarms, &message, 0);
+}
+
+//wrapper which sends an alarm-change request to newAlarms
+void changeAlarm(int hours, int minutes, unsigned int actions) {
+    changeAlarm(timeToAlarmTime(hours, minutes), actions);
+}
 
 
