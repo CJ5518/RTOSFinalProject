@@ -18,8 +18,6 @@ struct tm ntptime; // tm object used to get time
 
 int sendLights = LIGHT_SIGNAL_OFF; // signal to turn off NeoPixels declared in lightManager.hpp
 
-volatile bool button_Pressed = false; // used as a flag for switch debouncing
-
 const long gmtOffset_sec = -28800; // get time for PDT time zone 
 const int daylightOffset_sec = 3600; // account for daylight savings
 const char* ntpServer = "pool.ntp.org"; // target server to get time from internet
@@ -30,11 +28,8 @@ unsigned long timeSincePressed = -1; // used with delay to debounce switch press
 void IRAM_ATTR ISR(){
   if((millis() - timeSincePressed) >= DEBOUNCE){
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    button_Pressed = !button_Pressed;
-    if(button_Pressed == false){
-      xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken); // send light shutdown signal
-      tone(ALARM_PIN, 0); // turn off piezobuzzer
-    }
+    xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken); // send light shutdown signal
+    tone(ALARM_PIN, 0); // turn off piezobuzzer
     timeSincePressed = millis(); // reset debounce time
   }
 }
