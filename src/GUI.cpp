@@ -39,6 +39,9 @@ server->on("/alarm.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
 server->on("/alarm.html", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", alarm_html);
 });
+server->on("/common.js", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/javascript", common_js);
+});
 server->on("/index.css", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/css", index_css);
 });
