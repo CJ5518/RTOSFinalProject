@@ -17,10 +17,11 @@
 #define GPIO_INTERRUPT 18 // pin for pushbutton 1 on the Vandaluino Shield
 #define ALARM_PIN 15 // pin that outputs to piezobuzzer
 
-#define DEBOUNCE 100
+#define DEBOUNCE 100 // delay of 100 milliseconds for debouncing
 
-extern QueueHandle_t lightActions;
+extern QueueHandle_t lightActions; // queue handle used to send commands to lightManager.cpp
 
+// strings used to retrieve date and time information
 static char returnString[50];
 static char otherReturnString[50];
 
