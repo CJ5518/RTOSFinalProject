@@ -173,10 +173,12 @@ void task_alarmScheduler(void *p) {
                         //signal the same actions to happen SNOOZE_LENGTH later
                         rawTime = time(NULL);
                         structuredTime = localtime(&rawTime);
-                        changeAlarm(structuredTime->tm_hour, 
-                                    structuredTime->tm_min + SNOOZE_LENGTH + 1, 
-                                    currentActions | ACTION_ONCE);
-
+                        tempAlarm.actions = currentActions | ACTION_ONCE;
+                        //add 1 to number of minutes of snooze length to round, e.g. 12:35:23 up to 12:36
+                        //schedule it for 1 second after the minute to avoid overwriting any permanent alarms
+                        tempAlarm.time = 1 + timeToAlarmTime(structuredTime->tm_hour, 
+                                                             structuredTime->tm_min + SNOOZE_LENGTH + 1);
+                        xQueueSendToBack(newAlarms, &tempAlarm, 0);
                     }
                     //no break -- a snooze should do the same things as off, in addition to other stuff
                 case COMMAND_OFF:
