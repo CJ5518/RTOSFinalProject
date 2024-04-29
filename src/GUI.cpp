@@ -5,6 +5,7 @@
 #include "html.hpp"
 
 #include "hdcWrapper.hpp"
+#include "alarmScheduler.hpp"
 #include <time.h>
 
 //Adapted from:
@@ -72,13 +73,32 @@ server->on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
 				server->on("/getTmp", HTTP_POST, [](AsyncWebServerRequest *request) {
 					double temp, humid;
 					getTempHumid(temp, humid);
+					request->send(200, "text/plain", String(temp));
 				});
 				server->on("/getHumid", HTTP_POST, [](AsyncWebServerRequest *request) {
 					double temp, humid;
 					getTempHumid(temp, humid);
+					request->send(200, "text/plain", String(humid));
 				});
 				server->on("/getTime", HTTP_POST, [](AsyncWebServerRequest *request) {
 					time_t tim = time(0);
+					int hours, minutes;
+					timeFromAlarmTime(hours, minutes, timeToAlarmTime(tim));
+					String ret = "";
+					ret.concat(hours);
+					ret.concat(":");
+					ret.concat(minutes);
+					request->send(200, "text/plain", ret);
+				});
+
+				//Main screen buttons
+				server->on("/stopAlarm", HTTP_POST, [](AsyncWebServerRequest *request) {
+					offAlarm();
+					request->send(200);
+				});
+				server->on("/snoozeAlarm", HTTP_POST, [](AsyncWebServerRequest *request) {
+					snoozeAlarm();
+					request->send(200);
 				});
 
 				server->begin();
