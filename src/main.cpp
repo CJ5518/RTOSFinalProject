@@ -21,7 +21,7 @@ void setup() {
 	pinMode(GPIO_INTERRUPT, INPUT_PULLDOWN);
 	pinMode(ALARM_PIN, OUTPUT);
 
-	attachInterrupt(GPIO_INTERRUPT, ISR, FALLING);
+	attachInterrupt(digitalPinToInterrupt(GPIO_INTERRUPT), ISR, FALLING);
 
 	xTaskCreate(vLCDTask, "LCD", 2048, NULL, 5, NULL);
 

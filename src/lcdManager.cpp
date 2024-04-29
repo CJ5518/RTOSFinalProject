@@ -29,13 +29,17 @@ const long gmtOffset_sec = -28800; // get time for PDT time zone
 const int daylightOffset_sec = 3600; // account for daylight savings
 const char* ntpServer = "pool.ntp.org"; // target server to get time from internet
 
+unsigned long timeSincePressed = -1;
+
 void IRAM_ATTR ISR(){
-  // debounce logic
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  button_Pressed = !button_Pressed;
-  if(button_Pressed == false){
-    xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken);
-    tone(ALARM_PIN, 0);
+  if((millis() - timeSincePressed) >= DEBOUNCE){
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    button_Pressed = !button_Pressed;
+    if(button_Pressed == false){
+      xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken);
+      tone(ALARM_PIN, 0);
+    }
+    timeSincePressed = millis();
   }
 }
 
@@ -62,7 +66,7 @@ void getTime(){
   Serial.print(&ntptime, "%A, %B %d %Y %H:%M:%S");
   Serial.print("\n");
 
-  strftime(returnString, sizeof(returnString), "%A, %B %d", &ntptime);
+  strftime(returnString, sizeof(returnString), "%B %d, %Y", &ntptime);
   strftime(otherReturnString, sizeof(returnString), "%H:%M:%S", &ntptime);
 
   lcd.begin(16, 2); // initialize LCD 

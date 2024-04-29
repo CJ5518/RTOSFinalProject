@@ -17,6 +17,8 @@
 #define GPIO_INTERRUPT 18 // pin for pushbutton 1 on the Vandaluino Shield
 #define ALARM_PIN 15 // pin that outputs to piezobuzzer
 
+#define DEBOUNCE 100
+
 extern QueueHandle_t lightActions;
 
 static char returnString[50];
