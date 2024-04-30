@@ -8,6 +8,7 @@
  * presses on the Vandaluino Shield.
  *********************************************/
 #include "lcdManager.hpp"
+#include "alarmScheduler.hpp"
 #include <Arduino.h>
 
                // RS, E,  D4, D5, D6, D7
@@ -27,10 +28,18 @@ unsigned long timeSincePressed = -1; // used with delay to debounce switch press
 // interrupt is triggered by S1 pushbutton on the Vandaluino Shield
 void IRAM_ATTR ISR(){
   if((millis() - timeSincePressed) >= DEBOUNCE){
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken); // send light shutdown signal
-    tone(ALARM_PIN, 0); // turn off piezobuzzer
+    //BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    offAlarm();
+    // xQueueSendFromISR(lightActions, &sendLights, &xHigherPriorityTaskWoken); // send light shutdown signal
+    // tone(ALARM_PIN, 0); // turn off piezobuzzer
     timeSincePressed = millis(); // reset debounce time
+  }
+}
+
+void IRAM_ATTR ISR_SNOOZE(){
+  if((millis() - timeSincePressed) >= DEBOUNCE){
+    snoozeAlarm();
+    timeSincePressed = millis();
   }
 }
 

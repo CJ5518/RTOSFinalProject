@@ -15,7 +15,8 @@
 #include "lightManager.hpp"
 
 #define GPIO_INTERRUPT 18 // pin for pushbutton 1 on the Vandaluino Shield
-#define ALARM_PIN 15 // pin that outputs to piezobuzzer
+#define GPIO_SNOOZE 15
+#define ALARM_PIN 32 // pin that outputs to piezobuzzer
 
 #define DEBOUNCE 100 // delay of 100 milliseconds for debouncing
 
@@ -27,6 +28,7 @@ static char otherReturnString[50];
 
 void getTime();
 void IRAM_ATTR ISR();
+void IRAM_ATTR ISR_SNOOZE();
 void vLCDTask(void *pvParameters);
 
 #endif
