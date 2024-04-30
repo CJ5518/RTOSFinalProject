@@ -74,6 +74,7 @@ void task_alarmScheduler(void *p) {
         //time out every few ticks to check if the current alarm can go off, or if there are immediate commands
         while(xQueueReceive(newAlarms, &tempAlarm, 5)) {
             //find the alarm at this time, if one exists
+            i = 0;
             while(i < alarmCount && alarms[i].time < tempAlarm.time) {
                 i++;
             }
@@ -131,6 +132,15 @@ void task_alarmScheduler(void *p) {
                 tempAlarm = alarms[nextAlarm];
                 if(processedTime > tempAlarm.time) {
                     //the now-current actions are whatever was happening before, along with this alarm
+                    printf("Alarm triggered! Printing current list.\n");
+                    printf("(Time, Actions)\n");
+                    for(i = 0; i < nextAlarm; i++) {
+                        printf("  (%u, %u)\n", alarms[i].time, alarms[i].actions);
+                    }
+                    printf("->(%u, %u)\n", alarms[i].time, alarms[i].actions);
+                    for(; i < alarmCount; i++) {
+                        printf("  (%u, %u)\n", alarms[i].time, alarms[i].actions);
+                    }
                     currentActions = currentActions | tempAlarm.actions;
                     nextAlarm++;
                     if(tempAlarm.actions & ACTION_LIGHT) {
