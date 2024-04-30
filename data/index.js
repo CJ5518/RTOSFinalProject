@@ -10,7 +10,7 @@ function onInterval() {
 		document.getElementById("temp").innerText = temp.toString() + " " + (isC ? "C" : "F");
 	}, '');
 	makeRequest("./getHumid", function(res){
-		document.getElementById("humid").innerText = res;
+		document.getElementById("humid").innerText = res + "% humidity";
 	}, '');
 	makeRequest("./getTime", function(res){
 		document.getElementById("time").innerText = res;
