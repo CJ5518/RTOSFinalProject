@@ -9,6 +9,7 @@
  *********************************************/
 #include "lcdManager.hpp"
 #include "alarmScheduler.hpp"
+#include "hdcWrapper.hpp"
 #include <Arduino.h>
 
                // RS, E,  D4, D5, D6, D7
@@ -59,6 +60,8 @@ void vLCDTask(void *pvParameters){
 // call getLocalTime, print time to LCD if successful
 // otherwise print error message
 void getTime(){
+  double a, b;
+  getTempHumid(a, b);
 
   if(!getLocalTime(&ntptime)){
     Serial.print("Could not get time\n");
@@ -68,11 +71,14 @@ void getTime(){
 
   strftime(returnString, sizeof(returnString), "%B %d, %Y", &ntptime); // send time to returnString var
   strftime(otherReturnString, sizeof(returnString), "%H:%M:%S", &ntptime); // second string for better spacing
+  sprintf(tempString, "%lf", a);
 
   lcd.begin(16, 2); // initialize LCD 
   lcd.clear(); // clear LCD screen
   lcd.print(returnString); // print first line to LCD
-  lcd.setCursor(2,1); // set cursor to second line
+  lcd.setCursor(0, 2); // set cursor to second line (2,1)
   lcd.print(otherReturnString); // print second line to LCD
+  lcd.setCursor(10, 2);
+  lcd.print(tempString);
 
 }
