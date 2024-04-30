@@ -40,7 +40,7 @@ void setup() {
 	newAlarms = xQueueCreate(16, sizeof(alarmDefinition));
     listAlarms = xQueueCreate((MAX_ALARMS * 2), sizeof(alarmDefinition));
 	schedulerCommands = xQueueCreate(16, sizeof(int));
-	xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 4096, NULL, 5, NULL);
+	xTaskCreate(task_alarmScheduler, "Alarm Scheduler", 8192, NULL, 5, NULL);
 
 
 	WiFi.mode(WIFI_AP_STA);

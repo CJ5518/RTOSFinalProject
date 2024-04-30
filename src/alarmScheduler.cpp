@@ -120,7 +120,6 @@ void task_alarmScheduler(void *p) {
         if(alarmCount > 0) {
             rawTime = time(NULL);
             processedTime = timeToAlarmTime(rawTime);
-            tempAlarm = alarms[nextAlarm];
 
             //set the wraparound flag if it is after 2300
             if(processedTime > timeToAlarmTime(23, 0)) {
@@ -129,6 +128,7 @@ void task_alarmScheduler(void *p) {
 
             //if there are any possible alarms left in the day
             if(nextAlarm < alarmCount) {
+                tempAlarm = alarms[nextAlarm];
                 if(processedTime > tempAlarm.time) {
                     //the now-current actions are whatever was happening before, along with this alarm
                     currentActions = currentActions | tempAlarm.actions;
