@@ -25,6 +25,7 @@ extern QueueHandle_t lightActions; // queue handle used to send commands to ligh
 // strings used to retrieve date and time information
 static char returnString[50];
 static char otherReturnString[50];
+static char tempString[10];
 
 void getTime();
 void IRAM_ATTR ISR();
