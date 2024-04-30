@@ -1,6 +1,6 @@
 
-
-function makeRequest(url, onRes) {
+function emptyFunc() {}
+function makeRequest(url, onRes, data) {
 	var xhr = new XMLHttpRequest();
 
 	xhr.onreadystatechange = function () {
@@ -12,7 +12,8 @@ function makeRequest(url, onRes) {
 	};
 
 	xhr.open('POST', url, true);
-	xhr.send();
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhr.send(data);
 }
 
 

@@ -35,35 +35,31 @@
 			rel="stylesheet"
 			href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css" /></head
 	><body
-		><link rel="stylesheet" href="./style.css" /><div
-			><link href="./alarm.css" rel="stylesheet" /><div class="alarm-container"
+		>
+		<script src="./common.js"></script><link rel="stylesheet" href="./style.css" /><div
+			><link href="./alarm.css" rel="stylesheet" /><div class="alarm-container" id="topContainer"
 				><div class="alarm-container1"
 					><input
+						id="userAlarm"
 						type="time"
 						placeholder="alarm"
 						class="alarm-textinput input" /></div
 				><div class="alarm-container2"
-					><button type="button" class="alarm-button button"
-						>Add New Alarm</button
+					><button type="button" class="alarm-button button" onclick="createAlarmButtonClick()"
+						>Add/Edit Alarm</button
 					></div
-				><div class="alarm-container3"
-					><input type="checkbox" name="buzzerCheck" class="alarm-radiobutton" /><span
-						class="alarm-text"
-						>Beeping on the buzzer</span
-					><input type="checkbox" name="ledCheck" class="alarm-radiobutton1" /><span
-						class="alarm-text1"
-						>Turn on LEDs</span
-					></div
-				><div class="alarm-container4"
-					><button type="button" class="alarm-button1 button"
+				><div class="alarm-container3"><input type="checkbox" name="buzzerCheck" id="buzzerCheck" class="alarm-radiobutton"><span class="alarm-text">Beeping on the buzzer</span><input type="checkbox" name="ledCheck" id="ledCheck" class="alarm-radiobutton1"><span class="alarm-text1">Turn on LEDs</span><input type="checkbox" name="onceCheck" id="onceCheck" class="alarm-radiobutton1"><span class="alarm-text1">Only go Once</span></div><div class="alarm-container4"
+					><button type="button" class="alarm-button1 button" onclick="deleteAlarmButtonClick()"
 						>Delete Alarm</button
 					></div
-				><div class="alarm-container5"
+				>
+				
+				<div class="alarm-container5"
 					><a href="index.html" class="alarm-navlink button"
 						>Back to Home</a
 					></div
 				></div
 			></div
 		>
-	</body></html
+		<script src="./alarm.js"></script></body></html
 >

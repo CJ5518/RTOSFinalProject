@@ -35,7 +35,10 @@
 			rel="stylesheet"
 			href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css" /></head
 	><body
-		><link rel="stylesheet" href="./style.css" /><div
+		>
+		
+		<script src="./common.js"></script>
+		<link rel="stylesheet" href="./style.css" /><div
 			><link href="./index.css" rel="stylesheet" /><div class="home-container"
 				><h1 class="home-text"
 					><span>UIDAHO CS452 RTOS </span><br class="home-text02" /><span
@@ -44,30 +47,26 @@
 					></h1
 				><div class="home-container1"
 					><h1 class="home-text04"
-						>Current Time, Date, Temperature, and Humidity</h1
-					><span class="home-text05">Loading...</span
-					><span class="home-text06">Loading...</span
-					><span class="home-text07">Loading...</span></div
+						>Current Time, Temperature, and Humidity</h1
+					><span class="home-text05" id="time">Loading...</span
+					><span class="home-text06" id="temp">Loading...</span
+					><span class="home-text07" id="humid">Loading...</span></div
 				><div class="home-container2"
 					><h1 class="home-text08">Adjust Temperature</h1
-					><button type="button" class="home-button button"
+					><button type="button" class="home-button button" onclick="switchTempFormat()"
 						>Switch between Celsius/Fahrenheit degree</button
-					></div
-				><div class="home-container3"
-					><h1 class="home-text09">Adjust Time</h1
-					><button type="button" class="home-button1 button"
-						>Switch between 12/24 hour</button
 					></div
 				><div class="home-container4"
 					><a href="alarm.html" class="home-navlink button">ALARM SETUP</a></div
 				><div class="home-container5"
-					><button type="button" class="home-button2 button"
+					><button type="button" class="home-button2 button" onclick="makeRequest('./snoozeAlarm', emptyFunc,'')"
 						>SNOOZE ALARM</button
-					><button type="button" class="home-button3 button"
+					><button type="button" class="home-button3 button" onclick="makeRequest('./stopAlarm', emptyFunc,'')"
 						>TURN OFF ALARM</button
 					></div
 				></div
 			></div
 		>
+		<script src="./index.js"></script>
 	</body></html
 >
