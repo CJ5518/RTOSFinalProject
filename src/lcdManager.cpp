@@ -18,8 +18,6 @@ LiquidCrystal lcd(13, 12, 14, 27, 26, 25);
 
 struct tm ntptime; // tm object used to get time
 
-int sendLights = LIGHT_SIGNAL_OFF; // signal to turn off NeoPixels declared in lightManager.hpp
-
 const long gmtOffset_sec = -28800; // get time for PDT time zone 
 const int daylightOffset_sec = 3600; // account for daylight savings
 const char* ntpServer = "pool.ntp.org"; // target server to get time from internet
