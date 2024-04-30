@@ -52,7 +52,7 @@ void vLCDTask(void *pvParameters){
   for(;;){
     printf("LCDTask\n");
     getTime();
-    vTaskDelay(1000);
+    vTaskDelay(500);
   }
 }
 
